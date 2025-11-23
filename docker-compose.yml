@@ -6,7 +6,7 @@ services:
     container_name: potato-mysql
     environment:
       MYSQL_DATABASE: potato_api
-      MYSQL_ROOT_PASSWORD: ${APP_SERVER_URL}
+      MYSQL_ROOT_PASSWORD: ${SQL_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
