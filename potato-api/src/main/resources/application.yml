@@ -21,7 +21,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: "potatoapp.adm1n@gmail.com"
-    password: "usvidloymphbjdci"
+    password: ${MAIL_PASSWORD:usvidloymphbjdci}
     properties:
       mail:
         smtp:
@@ -30,15 +30,15 @@ spring:
             enable: true
 
 cloudinary:
-  cloud_name: "dcudlkqcm"
-  api_key: "734251979716821"
-  api_secret: "WHzx_91QpnZwhLi0DOrxJGMJDT4"
+  cloud_name: ${CLOUDINARY_CLOUD_NAME:dcudlkqcm}
+  api_key: ${CLOUDINARY_API_KEY:734251979716821}
+  api_secret: ${CLOUDINARY_API_SECRET:WHzx_91QpnZwhLi0DOrxJGMJDT4}
 
 app:
   server-url: ${APP_SERVER_URL:http://localhost:8080}
 
 vnpay:
   url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
-  returnUrl: "http://localhost:8080/potato-api/payment/call-back"
+  returnUrl: ${APP_SERVER_URL:http://localhost:8080}/potato-api/payment/call-back"
   tmnCode: L0SFF0BY
-  secretKey: IW1J6E4EK1E3NEF1GUIXUUMUFVLRLWYO
+  secretKey: ${VNPAY_SECRET_KEY:IW1J6E4EK1E3NEF1GUIXUUMUFVLRLWYO}

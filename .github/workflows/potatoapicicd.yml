@@ -1,0 +1,36 @@
+name: Potato Api Backend
+
+on:
+  push:
+    branches: [ "backend" ]
+
+jobs:
+  build:
+    runs-on: [self-hosted]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create .env file for Docker Compose
+        run: |
+          echo "SQL_PASSWORD=${{ secrets.SQL_PASSWORD }}" >> .env
+          echo "APP_SERVER_URL=${{ secrets.APP_SERVER_URL }}" >> .env
+          echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
+
+          echo "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> .env
+          echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env
+          echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
+
+          echo "VNPAY_SECRET_KEY=${{ secrets.VNPAY_SECRET_KEY }}" >> .env
+
+      - name: Stop old containers
+        run: |
+          docker-compose down || true
+
+      - name: Build & start new containers
+        run: |
+          docker-compose up -d --build
+      
+
+

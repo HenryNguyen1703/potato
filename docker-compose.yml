@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  mysql_db:
+    image: mysql:8.0
+    container_name: potato-mysql
+    environment:
+      MYSQL_DATABASE: potato_api
+      MYSQL_ROOT_PASSWORD: ${APP_SERVER_URL}
+    ports:
+      - "3307:3306"
+    volumes:
+      - potato_db_data:/var/lib/mysql
+    networks:
+      - potato_network
+    restart: unless-stopped
+  backend:
+    build:
+      context: ./potato-api
+      dockerfile: Backend.dockerfile
+    container_name: potato-backend
+    environment:
+      SQL_URL: jdbc:mysql://mysql_db:3306/potato-api
+      SQL_PASSWORD: ${SQL_PASSWORD}
+
+      APP_SERVER_URL: ${APP_SERVER_URL}
+
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+
+      VNPAY_SECRET_KEY: ${VNPAY_SECRET_KEY}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql_db
+    networks:
+      - potato_network
+    restart: unless-stopped
+
+volumes:
+  potato_db_data:
+networks:
+  potato_network:
+    driver: bridge
