@@ -20,7 +20,7 @@ services:
       dockerfile: Backend.dockerfile
     container_name: potato-backend
     environment:
-      SQL_URL: jdbc:mysql://mysql_db:3306/potato-api
+      SQL_URL: jdbc:mysql://mysql_db:3306/potato_api
       SQL_PASSWORD: ${SQL_PASSWORD}
 
       APP_SERVER_URL: ${APP_SERVER_URL}
