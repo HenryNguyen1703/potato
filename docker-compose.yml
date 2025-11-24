@@ -14,6 +14,7 @@ services:
     networks:
       - potato_network
     restart: unless-stopped
+
   backend:
     build:
       context: ./potato-api
@@ -24,7 +25,6 @@ services:
       SQL_PASSWORD: ${SQL_PASSWORD}
 
       APP_SERVER_URL: ${APP_SERVER_URL}
-
       MAIL_PASSWORD: ${MAIL_PASSWORD}
 
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
@@ -42,6 +42,7 @@ services:
 
 volumes:
   potato_db_data:
+
 networks:
   potato_network:
     driver: bridge
