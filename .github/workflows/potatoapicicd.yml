@@ -18,6 +18,10 @@ jobs:
           java-version: "21"
           distribution: "temurin"
 
+      - name: Make mvnw executable
+        working-directory: ./potato-api
+        run: chmod +x mvnw
+
       - name: Run tests
         working-directory: ./potato-api
         run: ./mvnw -q test
