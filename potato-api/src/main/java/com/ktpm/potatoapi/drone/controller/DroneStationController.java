@@ -27,11 +27,14 @@ public class DroneStationController {
     }
 
     @GetMapping("/{id}/drones")
+    @Operation(summary = "Show all drones of a station",
+            description = "API for System Admin to retrieve a list of all drones of a station")
     public ResponseEntity<?> getAllDronesOfStation(@PathVariable Long id) {
         return ResponseEntity.ok(service.getAllDronesOfStation(id));
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Show a drone station", description = "API for System Admin to retrieve a specific ")
     public ResponseEntity<?> getDroneStation(@PathVariable Long id) {
         return ResponseEntity.ok(service.getDroneStation(id));
     }

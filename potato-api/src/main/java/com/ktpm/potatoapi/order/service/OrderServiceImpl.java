@@ -182,7 +182,7 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(newStatus);
         orderRepository.save(order);
 
-        log.info("Updated {} status: {} successfully", order.getId(), newStatus);
+        log.info("Updated order {} status: {} successfully", order.getId(), newStatus);
 
         List<OrderItemResponse> orderItemResponses = mapOrderItemsWithOptionValuesToResponse(order.getOrderItems());
         OrderResponse orderResponse = orderMapper.toResponse(order);
@@ -324,7 +324,6 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
 
         // các bước chọn drone để giao đơn
-        DroneStation chosenStation = null;
         Drone chosenDrone = findSuitableDrone(
                 stations, merchantLat, merchantLng, customerLat, customerLng, batteryConsumptionPerKm);
 
@@ -338,8 +337,7 @@ public class OrderServiceImpl implements OrderService {
 
         order.setDrone(chosenDrone);
 
-        log.info("Assigned drone {} from station {} to order {}",
-                chosenDrone.getId(), chosenStation.getName(), order.getId());
+        log.info("Assigned drone {} to order {}", chosenDrone.getId(), order.getId());
     }
 
     private double distanceInKm(double startLat, double startLng, double endLat, double endLng) {
@@ -369,6 +367,7 @@ public class OrderServiceImpl implements OrderService {
             // tính lượng pin cần thiết
             double requiredBattery = calculateRequiredBattery(
                     station, merchantLat, merchantLng, customerLat, customerLng, batteryConsumptionPerKm);
+            log.info("requiredBattery: " + requiredBattery);
 
             // tìm drone đủ pin
             List<Drone> dronesEnoughBattery = availableDrones
@@ -397,14 +396,18 @@ public class OrderServiceImpl implements OrderService {
     ) {
         double stationToMerchant = distanceInKm(
                 station.getLatitude(), station.getLongitude(), merchantLat, merchantLng);
+        System.out.println("stationToMerchant: " + stationToMerchant);
 
         double merchantToCustomer = distanceInKm(
                 merchantLat, merchantLng, customerLat, customerLng);
+        System.out.println("merchantToCustomer: " + merchantToCustomer);
 
         double customerToStation = distanceInKm(
                 customerLat, customerLng, station.getLatitude(), station.getLongitude());
+        System.out.println("customerToStation: " + customerToStation);
 
         double totalDistance = stationToMerchant + merchantToCustomer + customerToStation;
+        System.out.println("totalDistance: " + totalDistance);
 
         return totalDistance * consumptionPerKm;
     }
