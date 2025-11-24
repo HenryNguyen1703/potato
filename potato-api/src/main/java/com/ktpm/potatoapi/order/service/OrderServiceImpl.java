@@ -364,25 +364,26 @@ public class OrderServiceImpl implements OrderService {
             // nếu trạm không có drone nào available thì tìm trạm kế tiếp
             if (availableDrones.isEmpty()) continue;
 
-            // tính lượng pin cần thiết
-            double requiredBattery = calculateRequiredBattery(
-                    station, merchantLat, merchantLng, customerLat, customerLng, batteryConsumptionPerKm);
-            log.info("requiredBattery: " + requiredBattery);
-
-            // tìm drone đủ pin
-            List<Drone> dronesEnoughBattery = availableDrones
-                    .stream()
-                    .filter(d -> d.getBattery() >= requiredBattery)
-                    .toList();
-
-            // nếu trạm không có drone nào đủ pin thì tìm trạm kế tiếp
-            if (dronesEnoughBattery.isEmpty()) continue;
-
-            // chọn drone có lượng pin gần nhất với lượng pin cần thiết
-            return dronesEnoughBattery
-                    .stream()
-                    .min(Comparator.comparingDouble(d -> d.getBattery() - requiredBattery))
-                    .get();
+//            // tính lượng pin cần thiết
+//            double requiredBattery = calculateRequiredBattery(
+//                    station, merchantLat, merchantLng, customerLat, customerLng, batteryConsumptionPerKm);
+//            log.info("requiredBattery: " + requiredBattery);
+//
+//            // tìm drone đủ pin
+//            List<Drone> dronesEnoughBattery = availableDrones
+//                    .stream()
+//                    .filter(d -> d.getBattery() >= requiredBattery)
+//                    .toList();
+//
+//            // nếu trạm không có drone nào đủ pin thì tìm trạm kế tiếp
+//            if (dronesEnoughBattery.isEmpty()) continue;
+//
+//            // chọn drone có lượng pin gần nhất với lượng pin cần thiết
+//            return dronesEnoughBattery
+//                    .stream()
+//                    .min(Comparator.comparingDouble(d -> d.getBattery() - requiredBattery))
+//                    .get();
+            return availableDrones.get(0);
 
         }
         return null;
