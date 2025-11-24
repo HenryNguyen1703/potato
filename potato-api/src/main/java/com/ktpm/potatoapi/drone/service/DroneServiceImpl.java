@@ -44,6 +44,8 @@ public class DroneServiceImpl implements DroneService {
         Drone drone = new Drone();
         drone.setCode(request.getCode());
         drone.setStation(station);
+        drone.setLatitude(station.getLatitude());
+        drone.setLongitude(station.getLongitude());
 
         try {
             return mapper.toResponse(droneRepository.save(drone));
