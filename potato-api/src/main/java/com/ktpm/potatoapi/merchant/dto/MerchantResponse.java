@@ -17,6 +17,8 @@ public class MerchantResponse {
     String name;
     String introduction;
     String address;
+    double latitude;
+    double longitude;
     Map<String, String> openingHours;
     BigDecimal avgRating;
     int ratingCount;

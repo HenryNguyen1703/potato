@@ -3,6 +3,7 @@ package com.ktpm.potatoapi.merchant.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -26,6 +27,12 @@ public class MerchantRegistrationRequest {
 
     @NotBlank(message = "ADDRESS_BLANK")
     String address;
+
+    @NotNull(message = "LATITUDE_NULL")
+    double latitude;
+
+    @NotNull(message = "LONGITUDE_NULL")
+    double longitude;
 
     @NotEmpty(message = "CUISINE_TYPES_EMPTY")
     Set<String> cuisineTypes;
