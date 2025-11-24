@@ -64,9 +64,9 @@ public class OrderController {
     }
 
     @PatchMapping("/orders/{orderId}/confirm")
-    @Operation(summary = "Update status of an order",
-            description = "API for Merchant Admin to update status of an order")
-    public ResponseEntity<?> confirmOrderCompleted(@PathVariable Long orderId) {
+    @Operation(summary = "Confirm an order",
+            description = "API for Customer to confirm an order")
+    public ResponseEntity<?> confirmOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.confirmOrder(orderId));
     }
 }
