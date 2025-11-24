@@ -34,7 +34,6 @@ public class SecurityConfig {
             "/merchants/{merchantId}/categories", "/merchants", "/merchants/{id}",
             "/menu-items/{menuItemId}", "/merchants/{merchantId}/menu-items",
             "/merchants", "/merchants/{id}",
-            "/admin/drones/{id}/update-location", "/admin/drones/{id}"
     };
     String[] CUSTOMER_ENDPOINTS = {
             "/cart",
