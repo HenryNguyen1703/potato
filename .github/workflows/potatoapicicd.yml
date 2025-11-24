@@ -19,6 +19,7 @@ jobs:
           distribution: "temurin"
 
       - name: Run tests
+        working-directory: ./potato-api
         run: ./mvnw -q test
 
   cd:
