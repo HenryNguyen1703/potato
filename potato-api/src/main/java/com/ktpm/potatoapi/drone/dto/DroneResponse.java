@@ -13,6 +13,8 @@ public class DroneResponse {
     Long id;
     String code;
     Integer battery;
+    double latitude;
+    double longitude;
     DroneStatus status;
     boolean isActive;
     DroneStationResponse station;
