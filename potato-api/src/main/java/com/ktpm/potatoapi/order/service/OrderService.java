@@ -11,10 +11,11 @@ public interface OrderService {
     OrderResponse createOrder(OrderRequest cartOrderRequest);
     List<OrderResponse> getAllOrdersInProgress();
     List<OrderResponse> getOrderHistory();
+    OrderResponse confirmOrder(Long orderId);
 
     // mutual service
-    OrderResponse getOrderDetail(Long orderId);
 
+    OrderResponse getOrderDetail(Long orderId);
     // services for merchant admin
     List<OrderResponse> getAllOrdersOfMyMerchant();
     OrderResponse updateStatusOrder(Long orderId, OrderStatusUpdateRequest request);

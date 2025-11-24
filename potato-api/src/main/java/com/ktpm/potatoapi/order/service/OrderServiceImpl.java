@@ -116,6 +116,32 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
+    public OrderResponse confirmOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        // if current status is CANCELED, then it is not updatable
+        OrderStatus currentStatus = order.getStatus();
+        if (currentStatus == OrderStatus.CANCELED)
+            throw new AppException(ErrorCode.ORDER_STATUS_INVALID_FOR_UPDATE);
+
+        order.setStatus(OrderStatus.COMPLETED);
+        orderRepository.save(order);
+        log.info("Confirmed {} successfully", order.getId());
+
+        Drone drone = order.getDrone();
+        drone.setStatus(DroneStatus.RETURNING);
+        droneRepository.save(drone);
+        log.info("Updated drone status to RETURNING successfully");
+
+        List<OrderItemResponse> orderItemResponses = mapOrderItemsWithOptionValuesToResponse(order.getOrderItems());
+        OrderResponse orderResponse = orderMapper.toResponse(order);
+        orderResponse.setOrderItems(orderItemResponses);
+        return orderResponse;
+    }
+
+    @Override
     public OrderResponse getOrderDetail(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
