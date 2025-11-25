@@ -16,14 +16,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = """
         FROM Order o
         WHERE o.customer.id = :customerId
-        AND o.status = 'CONFIRMED' or o.status = 'DELIVERING'
+        AND (o.status = 'CONFIRMED' or o.status = 'DELIVERING' or o.status = 'READY')
     """)
     List<Order> getOrderInProgressByCustomer(@Param("customerId") Long customerId);
 
     @Query(value = """
         FROM Order o
         WHERE o.customer.id = :customerId
-        AND o.status = 'COMPLETED' or o.status = 'CANCELED'
+        AND (o.status = 'COMPLETED' or o.status = 'CANCELED')
     """)
     List<Order> getOrderHistoryByCustomer(@Param("customerId") Long customerId);
 
