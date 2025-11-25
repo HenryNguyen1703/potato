@@ -7,5 +7,6 @@ public interface DroneService {
     DroneResponse getDrone(Long id);
     DroneResponse createDrone(DroneRequest request);
     DroneResponse updateDroneLocation(Long id, double latitude, double longitude);
+    DroneResponse updateDroneStatus(Long id, String status);
     void deleteDrone(Long id);
 }

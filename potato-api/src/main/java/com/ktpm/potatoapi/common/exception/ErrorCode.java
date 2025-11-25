@@ -149,6 +149,7 @@ public enum ErrorCode {
     DRONE_CODE_NULL(14009, "Drone's code is required", HttpStatus.BAD_REQUEST),
     DRONE_STATION_NULL(14010, "Drone's station is required", HttpStatus.BAD_REQUEST),
     NO_DRONE_WITH_ENOUGH_BATTERY(14011, "There are not drones with enough battery", HttpStatus.BAD_REQUEST),
+    DRONE_STATUS_REQUEST_INVALID(140012, "Invalid drone status", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;

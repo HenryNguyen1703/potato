@@ -97,6 +97,18 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
+    public DroneResponse updateDroneStatus(Long id, String status) {
+        Drone drone = droneRepository.findById(id).orElseThrow(()-> new AppException(ErrorCode.DRONE_NOT_FOUND));
+        try {
+            drone.setStatus(DroneStatus.valueOf(status));
+        } catch (IllegalArgumentException e) {
+            throw new AppException(ErrorCode.DRONE_STATUS_REQUEST_INVALID);
+        }
+
+        return mapper.toResponse(droneRepository.save(drone));
+    }
+
+    @Override
     public void deleteDrone(Long id) {
         Drone drone = droneRepository.findById(id).orElseThrow(()-> new AppException(ErrorCode.DRONE_NOT_FOUND));
         drone.setActive(false);

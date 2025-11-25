@@ -39,6 +39,13 @@ public class DroneController {
         return ResponseEntity.ok(service.updateDroneLocation(id, latitude, longitude));
     }
 
+    @PutMapping("/{id}/update-status")
+    @Operation(summary = "Update drone location", description = "API for System Admin to update drone location")
+    public ResponseEntity<?> updateDroneStatus(@PathVariable Long id,
+                                                 @RequestParam String status) {
+        return ResponseEntity.ok(service.updateDroneStatus(id, status));
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete drone", description = "API for System Admin to delete a specific drone")
     public ResponseEntity<?> deleteDrone(@PathVariable Long id) {
