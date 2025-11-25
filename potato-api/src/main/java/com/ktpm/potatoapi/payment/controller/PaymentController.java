@@ -4,6 +4,7 @@ import com.ktpm.potatoapi.payment.dto.PaymentRequest;
 import com.ktpm.potatoapi.payment.service.PaymentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -29,15 +31,21 @@ public class PaymentController {
     }
 
     @GetMapping("/call-back")
-    public ResponseEntity<String> handleVnpayCallback(@RequestParam Map<String, String> params) {
+    public void callback(@RequestParam Map<String, String> params,
+                         HttpServletResponse response) throws IOException {
 
-        String responseCode = params.get("vnp_ResponseCode");
+        String code = params.get("vnp_ResponseCode");
 
-        // Nếu giao dịch thành công
-        if ("00".equals(responseCode)) {
-            return ResponseEntity.ok("Payment success");
+        String redirectUrl;
+
+        if ("00".equals(code)) {
+            // Thành công
+            redirectUrl = "https://cnpm-rouge.vercel.app/payment-result?status=success";
         } else {
-            return ResponseEntity.ok("Payment failed: " + responseCode);
+            // Thất bại
+            redirectUrl = "https://cnpm-rouge.vercel.app/payment-result?status=fail&code=" + code;
         }
+
+        response.sendRedirect(redirectUrl);
     }
 }
