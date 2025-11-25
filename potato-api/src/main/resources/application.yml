@@ -39,6 +39,6 @@ app:
 
 vnpay:
   url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
-  returnUrl: ${APP_SERVER_URL:http://localhost:8080}/potato-api/payment/call-back"
+  returnUrl: ${APP_SERVER_URL:http://localhost:8080}/potato-api/payment/call-back
   tmnCode: L0SFF0BY
   secretKey: ${VNPAY_SECRET_KEY:IW1J6E4EK1E3NEF1GUIXUUMUFVLRLWYO}
