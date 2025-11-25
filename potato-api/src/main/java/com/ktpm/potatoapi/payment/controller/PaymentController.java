@@ -10,7 +10,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,5 +26,18 @@ public class PaymentController {
     @GetMapping("create-payment-url")
     public ResponseEntity<?> pay(HttpServletRequest httpServletRequest, PaymentRequest paymentRequest) {
         return ResponseEntity.ok(paymentService.createPayment(httpServletRequest, paymentRequest));
+    }
+
+    @GetMapping("/call-back")
+    public ResponseEntity<String> handleVnpayCallback(@RequestParam Map<String, String> params) {
+
+        String responseCode = params.get("vnp_ResponseCode");
+
+        // Nếu giao dịch thành công
+        if ("00".equals(responseCode)) {
+            return ResponseEntity.ok("Payment success");
+        } else {
+            return ResponseEntity.ok("Payment failed: " + responseCode);
+        }
     }
 }
