@@ -28,6 +28,10 @@ jobs:
         run: |
           docker-compose down || true
 
+      - name: remove old images and clear memory
+        run: |
+          docker image prune -af || true
+
       - name: Build & start new containers
         run: |
           docker-compose up -d --build
