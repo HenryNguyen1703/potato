@@ -10,10 +10,12 @@ import com.ktpm.potatoapi.drone.entity.DroneStatus;
 import com.ktpm.potatoapi.drone.mapper.DroneMapper;
 import com.ktpm.potatoapi.drone.repo.DroneRepository;
 import com.ktpm.potatoapi.drone.repo.DroneStationRepository;
+import com.ktpm.potatoapi.mail.MailService;
 import com.ktpm.potatoapi.merchant.entity.Merchant;
 import com.ktpm.potatoapi.order.entity.Order;
 import com.ktpm.potatoapi.order.entity.OrderStatus;
 import com.ktpm.potatoapi.order.repo.OrderRepository;
+import jakarta.mail.MessagingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,6 +30,7 @@ public class DroneServiceImpl implements DroneService {
     DroneMapper mapper;
     DroneStationRepository droneStationRepository;
     OrderRepository orderRepository;
+    MailService mailService;
 
     @Override
     public DroneResponse getDrone(Long id) {
@@ -55,7 +58,7 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public DroneResponse updateDroneLocation(Long id, double latitude, double longitude) {
+    public DroneResponse updateDroneLocation(Long id, double latitude, double longitude) throws MessagingException {
         Drone drone = droneRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.DRONE_NOT_FOUND));
 
@@ -74,6 +77,9 @@ public class DroneServiceImpl implements DroneService {
                 drone.setStatus(DroneStatus.DELIVERING);
                 order.setStatus(OrderStatus.DELIVERING);
                 orderRepository.save(order);
+
+                mailService.sendDroneMail(order.getCustomer().getEmail(), order.getCustomer().getFullName(), order.getCode());
+                mailService.sendDroneMail(order.getMerchant().getMerchantAdmin().getEmail(), order.getMerchant().getMerchantAdmin().getFullName(), order.getCode());
             }
 
 //            // drone arrive at delivery address

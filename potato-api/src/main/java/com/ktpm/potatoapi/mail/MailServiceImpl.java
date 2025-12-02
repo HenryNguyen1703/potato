@@ -84,4 +84,18 @@ public class MailServiceImpl implements MailService {
                 )
         );
     }
+
+    @Override
+    public void sendDroneMail(String mailTo, String fullName, String orderCode) throws MessagingException {
+        sendEmail(
+                mailTo,
+                "Update drone",
+                "email/drone",
+                Map.of(
+                        "fullName", fullName,
+                        "email", mailTo,
+                        "orderCode", orderCode
+                )
+        );
+    }
 }

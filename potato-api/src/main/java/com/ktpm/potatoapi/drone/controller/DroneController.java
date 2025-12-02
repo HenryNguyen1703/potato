@@ -4,6 +4,7 @@ import com.ktpm.potatoapi.drone.dto.DroneRequest;
 import com.ktpm.potatoapi.drone.service.DroneService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class DroneController {
     @Operation(summary = "Update drone location", description = "API for System Admin to update drone location")
     public ResponseEntity<?> updateDroneLocation(@PathVariable Long id,
                                                  @RequestParam double latitude,
-                                                 @RequestParam double longitude) {
+                                                 @RequestParam double longitude) throws MessagingException {
         return ResponseEntity.ok(service.updateDroneLocation(id, latitude, longitude));
     }
 

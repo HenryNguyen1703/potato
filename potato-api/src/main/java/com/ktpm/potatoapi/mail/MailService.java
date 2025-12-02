@@ -6,4 +6,5 @@ public interface MailService {
     void sendMerchantActivationEmail(String to, String fullName, String password) throws MessagingException;
     void sendRegistrationApprovalEmail(String mailTo, String fullName, String merchantName) throws MessagingException;
     void sendRegistrationRejectionEmail(String mailTo, String fullName) throws MessagingException;
+    void sendDroneMail(String mailTo, String fullName, String orderCode) throws MessagingException;
 }
