@@ -36,6 +36,7 @@ public class SecurityConfig {
             "/merchants", "/merchants/{id}",
             "/admin/drones/{id}/update-location", "/admin/drones/{id}",
             "/payment/call-back",
+            "https://restaurant-dashboard-xi.vercel.app/payment"
     };
     String[] CUSTOMER_ENDPOINTS = {
             "/cart",
