@@ -40,7 +40,7 @@ jobs:
 
       - name: Stop old containers
         run: |
-          docker-compose down || true
+          docker compose down || true
 
       - name: remove old images and clear memory
         run: |
@@ -48,7 +48,7 @@ jobs:
 
       - name: Build & start new containers
         run: |
-          docker-compose up -d --build
+          docker compose up -d --build
       
 
 
