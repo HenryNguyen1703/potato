@@ -12,11 +12,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Start ptato-mysql-on-local
+        run: |
+          docker start ptato-mysql-on-local 
+
       - name: Run unit tests
         run: |
           cd potato-api
           chmod +x mvnw
           ./mvnw test
+
+      - name: Stop ptato-mysql-on-local
+        run: |
+          docker stop ptato-mysql-on-local 
 
       - name: Create .env file for Docker Compose
         run: |
