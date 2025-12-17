@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,18 +31,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse signUp(SignUpRequest signUpRequest) {
-        if (userRepository.existsByEmail(signUpRequest.getEmail()))
-            throw new AppException(ErrorCode.USER_EXISTED);
-
         // Create new user
         User user = userMapper.toEntity(signUpRequest);
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole(Role.CUSTOMER);
-        userRepository.save(user);
 
-        // Generate Jwt token
-        log.info("{} sign up success", user.getEmail());
-        return new AuthResponse(JwtUtils.createToken(user));
+        try {
+            userRepository.save(user);
+
+            // Generate Jwt token
+            log.info("{} sign up success", user.getEmail());
+            return new AuthResponse(JwtUtils.createToken(user));
+        } catch (DataIntegrityViolationException e) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
     }
 
     @Override

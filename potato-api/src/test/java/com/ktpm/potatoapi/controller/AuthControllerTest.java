@@ -1,7 +1,8 @@
 package com.ktpm.potatoapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ktpm.potatoapi.user.controller.AuthController;
+import com.ktpm.potatoapi.common.exception.AppException;
+import com.ktpm.potatoapi.common.exception.ErrorCode;
 import com.ktpm.potatoapi.user.dto.AuthResponse;
 import com.ktpm.potatoapi.user.dto.SignUpRequest;
 import com.ktpm.potatoapi.user.service.AuthService;
@@ -12,7 +13,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -27,27 +27,67 @@ public class AuthControllerTest {
     @Autowired MockMvc mockMvc;
     @MockBean private AuthService authService;
     private SignUpRequest signUpRequest;
-    private AuthResponse authResponse;
+    @Autowired ObjectMapper objectMapper;
 
     @BeforeEach
-    void initData() {
-        signUpRequest = new SignUpRequest("tanpuh@gmail.com", "Npt@171104", "Phu Thanh");
-        authResponse = new AuthResponse("access-token-123");
+    void init() {
     }
 
     @Test
     void signUp_success() throws Exception {
-        // given
-        ObjectMapper objectMapper = new ObjectMapper();
+        signUpRequest = new SignUpRequest("tanpuh@gmail.com", "Npt@171104", "Phu Thanh");
+        AuthResponse authResponse = new AuthResponse("access-token-123");
+
         String content = objectMapper.writeValueAsString(signUpRequest);
 
-        // when - then
-        Mockito.when(authService.signUp(ArgumentMatchers.any())).thenReturn(authResponse);
+        Mockito.when(authService.signUp(ArgumentMatchers.any()))
+                .thenReturn(authResponse);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/auth/sign-up")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(content)
-        ).andExpect(MockMvcResultMatchers.status().isOk());
+                    .post("/auth/sign-up")
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(content)
+                ).andExpect(MockMvcResultMatchers.status().isOk());
     }
+
+    @Test
+    void signUp_invalidEmail_fail() throws Exception {
+        signUpRequest = new SignUpRequest("invalid-email", "Npt@171104", "Phu Thanh");
+
+        String content = objectMapper.writeValueAsString(signUpRequest);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void signUp_missingPassword_fail() throws Exception {
+        signUpRequest = new SignUpRequest("test@gmail.com", "", "Phu Thanh");
+
+        String content = objectMapper.writeValueAsString(signUpRequest);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void signUp_emailExists_fail() throws Exception {
+        String content = new ObjectMapper().writeValueAsString(signUpRequest);
+
+        Mockito.when(authService.signUp(ArgumentMatchers.any()))
+                .thenThrow(new AppException(ErrorCode.USER_EXISTED));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
 }
