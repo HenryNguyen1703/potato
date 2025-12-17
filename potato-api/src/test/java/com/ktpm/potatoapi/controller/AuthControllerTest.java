@@ -34,8 +34,8 @@ public class AuthControllerTest {
     }
 
     @Test
-    void signUp_success() throws Exception {
-        signUpRequest = new SignUpRequest("tanpuh@gmail.com", "Npt@171104", "Phu Thanh");
+    void signUp_validEmailAndPassword_8chars_success() throws Exception {
+        signUpRequest = new SignUpRequest("tanpuh@gmail.com", "Aa@12345", "Phu Thanh");
         AuthResponse authResponse = new AuthResponse("access-token-123");
 
         String content = objectMapper.writeValueAsString(signUpRequest);
@@ -48,6 +48,23 @@ public class AuthControllerTest {
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .content(content)
                 ).andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void signUp_validEmailAndPassword_20chars_success() throws Exception {
+        signUpRequest = new SignUpRequest("tanpuh@gmail.com", "Aa@12345678912345678", "Phu Thanh");
+        AuthResponse authResponse = new AuthResponse("access-token-123");
+
+        String content = objectMapper.writeValueAsString(signUpRequest);
+
+        Mockito.when(authService.signUp(ArgumentMatchers.any()))
+                .thenReturn(authResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/auth/sign-up")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(content)
+        ).andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -64,7 +81,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    void signUp_missingPassword_fail() throws Exception {
+    void signUp_invalidPassword_blank_fail() throws Exception {
         signUpRequest = new SignUpRequest("test@gmail.com", "", "Phu Thanh");
 
         String content = objectMapper.writeValueAsString(signUpRequest);
@@ -77,7 +94,32 @@ public class AuthControllerTest {
     }
 
     @Test
-    void signUp_emailExists_fail() throws Exception {
+    void signUp_invalidPassword_7chars_fail() throws Exception {
+        signUpRequest = new SignUpRequest("test@gmail.com", "Aa@1234", "Phu Thanh");
+        String content = new ObjectMapper().writeValueAsString(signUpRequest);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void signUp_invalidPassword_21chars_fail() throws Exception {
+        signUpRequest = new SignUpRequest("test@gmail.com", "Aa@123456789123456789", "Phu Thanh");
+        String content = new ObjectMapper().writeValueAsString(signUpRequest);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void signUp_userExists_fail() throws Exception {
+        signUpRequest = new SignUpRequest("test@gmail.com", "Npt@171104", "Phu Thanh");
         String content = new ObjectMapper().writeValueAsString(signUpRequest);
 
         Mockito.when(authService.signUp(ArgumentMatchers.any()))
@@ -89,5 +131,4 @@ public class AuthControllerTest {
                         .content(content))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
-
 }
