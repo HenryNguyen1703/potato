@@ -12,6 +12,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Run unit tests
+        run: |
+          cd potato-api
+          chmod +x mvnw
+          ./mvnw test
+
       - name: Create .env file for Docker Compose
         run: |
           echo "SQL_PASSWORD=${{ secrets.SQL_PASSWORD }}" >> .env
