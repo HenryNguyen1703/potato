@@ -12,19 +12,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Start ptato-mysql-on-local
-        run: |
-          docker start ptato-mysql-on-local 
-
       - name: Run unit tests
         run: |
           cd potato-api
           chmod +x mvnw
           ./mvnw test
-
-      - name: Stop ptato-mysql-on-local
-        run: |
-          docker stop ptato-mysql-on-local 
 
       - name: Create .env file for Docker Compose
         run: |
@@ -37,10 +29,6 @@ jobs:
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
 
           echo "VNPAY_SECRET_KEY=${{ secrets.VNPAY_SECRET_KEY }}" >> .env
-
-      - name: Stop old containers
-        run: |
-          docker compose down || true
 
       - name: remove old images and clear memory
         run: |
