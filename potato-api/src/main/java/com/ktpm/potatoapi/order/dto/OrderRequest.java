@@ -1,6 +1,7 @@
 package com.ktpm.potatoapi.order.dto;
 
 import com.ktpm.potatoapi.cart.dto.CartItemRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -25,13 +26,14 @@ public class OrderRequest {
     String deliveryAddress;
 
     @NotNull(message = "LATITUDE_NULL")
-    double latitude;
+    Double latitude;
 
     @NotNull(message = "LONGITUDE_NULL")
-    double longitude;
+    Double longitude;
 
     String note;
 
     @NotEmpty(message = "ORDER_CART_ITEMS_EMPTY")
+            @Valid
     List<CartItemRequest> cartItems;
 }

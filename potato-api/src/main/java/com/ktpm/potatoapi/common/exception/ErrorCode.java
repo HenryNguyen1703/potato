@@ -128,7 +128,7 @@ public enum ErrorCode {
     CART_MENU_ITEM_QUANTITY_NULL(11002, "Menu item's quantity in cart is required", HttpStatus.BAD_REQUEST),
     CART_MENU_ITEM_QUANTITY_NEG_OR_ZERO(
             11003,
-            "Menu item's quantity in cart must be greater than or equal to 0",
+            "Menu item's quantity in cart must be greater than 0",
             HttpStatus.BAD_REQUEST
     ),
 
