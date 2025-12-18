@@ -7,7 +7,6 @@ import com.ktpm.potatoapi.user.dto.AuthResponse;
 import com.ktpm.potatoapi.user.dto.SignUpRequest;
 import com.ktpm.potatoapi.user.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -28,10 +27,6 @@ public class AuthControllerTest {
     @MockBean private AuthService authService;
     private SignUpRequest signUpRequest;
     @Autowired ObjectMapper objectMapper;
-
-    @BeforeEach
-    void init() {
-    }
 
     @Test
     void signUp_validEmailAndPassword_8chars_success() throws Exception {
@@ -68,9 +63,20 @@ public class AuthControllerTest {
     }
 
     @Test
-    void signUp_invalidEmail_fail() throws Exception {
-        signUpRequest = new SignUpRequest("invalid-email", "Npt@171104", "Phu Thanh");
+    void signUp_invalidEmail_incorrectFormat_fail() throws Exception {
+        signUpRequest = new SignUpRequest("invalid-email", "Aa@12345", "Phu Thanh");
+        String content = objectMapper.writeValueAsString(signUpRequest);
 
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void signUp_invalidEmail_blank_fail() throws Exception {
+        signUpRequest = new SignUpRequest("", "Aa@12345", "Phu Thanh");
         String content = objectMapper.writeValueAsString(signUpRequest);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -83,7 +89,6 @@ public class AuthControllerTest {
     @Test
     void signUp_invalidPassword_blank_fail() throws Exception {
         signUpRequest = new SignUpRequest("test@gmail.com", "", "Phu Thanh");
-
         String content = objectMapper.writeValueAsString(signUpRequest);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -108,6 +113,54 @@ public class AuthControllerTest {
     @Test
     void signUp_invalidPassword_21chars_fail() throws Exception {
         signUpRequest = new SignUpRequest("test@gmail.com", "Aa@123456789123456789", "Phu Thanh");
+        String content = new ObjectMapper().writeValueAsString(signUpRequest);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void signUp_invalidPassword_missingUppercase_fail() throws Exception {
+        signUpRequest = new SignUpRequest("test@gmail.com", "aa@12345", "Phu Thanh");
+        String content = new ObjectMapper().writeValueAsString(signUpRequest);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void signUp_invalidPassword_missingLowercase_fail() throws Exception {
+        signUpRequest = new SignUpRequest("test@gmail.com", "AA@12345", "Phu Thanh");
+        String content = new ObjectMapper().writeValueAsString(signUpRequest);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void signUp_invalidPassword_missingSpecial_fail() throws Exception {
+        signUpRequest = new SignUpRequest("test@gmail.com", "AA123456", "Phu Thanh");
+        String content = new ObjectMapper().writeValueAsString(signUpRequest);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/auth/sign-up")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void signUp_invalidPassword_missingDigit_fail() throws Exception {
+        signUpRequest = new SignUpRequest("test@gmail.com", " Aa@!#$%^", "Phu Thanh");
         String content = new ObjectMapper().writeValueAsString(signUpRequest);
 
         mockMvc.perform(MockMvcRequestBuilders
